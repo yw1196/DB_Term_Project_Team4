@@ -7,21 +7,17 @@
 
 
 <%
-	//ÆÄ¶ó¹ÌÅÍ °ª ÀÐ¾îµéÀÌ´Â ºÎºÐ
-	String Id = request.getParameter("ID");
-	String Title = request.getParameter("Title");
-	String Director = request.getParameter("Director");
-	String Actors = request.getParameter("Actors");
-	String Plot = request.getParameter("Plot");
-	String Rating = request.getParameter("Rating");
-	String StartDate = request.getParameter("StartDate");
-	String Running_Time = request.getParameter("Running_Time");
+	//íŒŒë¼ë¯¸í„° ê°’ ì½ì–´ë“¤ì´ëŠ” ë¶€ë¶„
+	String Id = request.getParameter("id");
+	String Title = request.getParameter("title");
+	String Director = request.getParameter("director");
+	String Actors = request.getParameter("actors");
+	String Plot = request.getParameter("plot");
+	String Rating = request.getParameter("rating");
+	String StartDate = request.getParameter("startdate");
+	String Running_Time = request.getParameter("running_time");
 	
-	// ÇöÀç ³¯Â¥¿Í ½Ã°£À» °¡Á®¿È
-	Timestamp register = new Timestamp(System.currentTimeMillis());
-	
-	
-	//DB¿Í ¿¬°á
+	//DBì™€ ì—°ê²°
 	Connection conn = null;
 	PreparedStatement pstmt = null;
 	String str = "";
@@ -33,14 +29,14 @@
 		String dbId = "root";
 		String dbPass = "dyddns";
 		
-		Class.forName("com.mysql.jdbc.Driver"); // µ¥ÀÌÅÍº£ÀÌ½º¿Í ¿¬µ¿ÇÏ±â À§ÇØ DriverManager¿¡ µî·ÏÇÑ´Ù.
-		conn = DriverManager.getConnection(jdbcUrl, dbId, dbPass); // DiverManager °´Ã¼·ÎºÎÅÍ Connection °´Ã¼¸¦ ¾ò¾î¿Â´Ù.
+		Class.forName("com.mysql.jdbc.Driver"); // ë°ì´í„°ë² ì´ìŠ¤ì™€ ì—°ë™í•˜ê¸° ìœ„í•´ DriverManagerì— ë“±ë¡í•œë‹¤.
+		conn = DriverManager.getConnection(jdbcUrl, dbId, dbPass); // DiverManager ê°ì²´ë¡œë¶€í„° Connection ê°ì²´ë¥¼ ì–»ì–´ì˜¨ë‹¤.
 		
-		//DB Äõ¸®½ÇÇà
+		//DB ì¿¼ë¦¬ì‹¤í–‰
 		String sql = "select id, title from movie where id=?";
 		pstmt = conn.prepareStatement(sql);
 		pstmt.setString(1, Id);
-		rs = pstmt.executeQuery(); // ½ÇÁ¦ Äõ¸® ½ÇÇà
+		rs = pstmt.executeQuery(); // ì‹¤ì œ ì¿¼ë¦¬ ì‹¤í–‰
 		
 		if(rs.next()){
 			String rId = rs.getString("id");
@@ -57,16 +53,16 @@
 				pstmt.setString(6, Running_Time);
 				pstmt.setString(7, Id);
 				pstmt.executeUpdate();
-				str = "¿µÈ­ Á¤º¸ ¼öÁ¤ÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù.";
+				str = "ì˜í™” ì •ë³´ ìˆ˜ì •ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤.";
 			}
 			else{
-				str = "¾ÆÀÌµð¿Í Á¦¸ñÀÌ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.";
+				str = "ì•„ì´ë””ì™€ ì œëª©ì´ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.";
 			}
 		}
 	}
 	catch (Exception e){
 		e.printStackTrace();
-		str = "¿µÈ­Á¤º¸ ¼öÁ¤ ½ÇÆÐ";
+		str = "ì˜í™”ì •ë³´ ìˆ˜ì • ì‹¤íŒ¨";
 	}
 	finally{
 		if(pstmt != null) try{pstmt.close();}catch(SQLException sqle){}
@@ -83,7 +79,7 @@
 <body>
 	<%=str %>
 	<form action="AdminForm.jsp">
-		<input type="submit" value="È®ÀÎ">
+		<input type="submit" value="í™•ì¸">
 	</form>
 </body>
 </html>
