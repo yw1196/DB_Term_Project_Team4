@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-영화수정부
+결제유무확인
 </body>
 </html>

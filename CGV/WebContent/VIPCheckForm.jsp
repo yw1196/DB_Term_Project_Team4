@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-영화수정부
+VIP회원 체크
 </body>
 </html>

@@ -3,15 +3,23 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="LoginForm.css">
+
 <meta charset="EUC-KR">
 <title>Insert title here</title>
 </head>
 <body>
-	<form action="LoginPro.jsp" method="post">
-		<input type="text" name="id" maxlength="12" placeholder="ID"><br />
-		<input type="password" name="passwd" maxlength="12" placeholder="PW"><br />
-		<input type="submit" value="로그인">
-		<input type="button" value="회원가입" onclick="location.href='RegisterForm.jsp'">
-	</form>
+	<div class="main">
+		<div class="info">
+			<form action="LoginPro.jsp" method="post">
+				<input type="text" name="id" maxlength="12" placeholder="ID"><br />
+				<input type="password" name="passwd" maxlength="12" placeholder="PW"><br />
+				<input type="submit" value="로그인"> <input type="button"
+					value="회원가입" onclick="location.href='RegisterForm.jsp'">
+			</form>
+		</div>
+	</div>
+
+
 </body>
 </html>
