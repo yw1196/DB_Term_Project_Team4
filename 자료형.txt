@@ -1,0 +1,8 @@
+date -> 'YYYY-MM-DD'
+
+time -> 'hh:mm:ss'
+
+date 넣을 때 String - YYYYMMDD / YYYY-MM-DD
+	
+
+time 넣을 때 String - HHMMSS / HH:MM:SS
