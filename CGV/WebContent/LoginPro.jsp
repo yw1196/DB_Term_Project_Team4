@@ -4,6 +4,7 @@
 
 <%@ page import="java.sql.*"%>
 <%@ page import="user.LogonDBBean"%>
+
 <%
 	request.setCharacterEncoding("euc-kr");
 %>
@@ -20,20 +21,54 @@
 	int Acheck = logon.AdminCheck(id);
 
 	hs.setAttribute("ac", Acheck);
+	
+	Connection conn = null;
+	PreparedStatement pstmt = null;
+	String str = "";
+	String[] title = new String[3];
+	String[] director = new String[3];
+	String[] rating = new String[3];
+	String[] running_time  = new String[3];
+	
+	try{
+		String jdbcUrl = "jdbc:mysql://localhost:3306/cgv?useSSL=false";
+		String dbId = "root";
+		String dbPass = "rlarnrgus1";
+		
+		Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection(jdbcUrl, dbId, dbPass);
+		
+		String sql = "SELECT * FROM MOVIE";
+		pstmt = conn.prepareStatement(sql);
+		ResultSet rs = pstmt.executeQuery();
+		
+		for(int i = 0; i < 3; i++) {
+		rs.next();
+		title[i] = rs.getString("title");
+		director[i] = rs.getString("director");
+		rating[i] = rs.getString("rating");
+		running_time[i] = rs.getString("running_time");
+		}
+		
+		
+	}
+	catch(Exception e){
+		
+	}
 	if (check == 1) {
 %>
 <%
 	} else if (check == 0) {
 %>
 <script>
-	alert("ºñ¹Ğ¹øÈ£°¡ ¸ÂÁö ¾Ê½À´Ï´Ù.");
+	alert("ë¹„ë°€ë²ˆí˜¸ê°€ ë§ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 	history.go(-1);
 </script>
 <%
 	} else {
 %>
 <script>
-	alert("¾ÆÀÌµğ°¡ ¸ÂÁö ¾Ê½À´Ï´Ù.");
+	alert("ì•„ì´ë””ê°€ ë§ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 	history.go(-1);
 </script>
 <%
@@ -45,20 +80,20 @@
 <head>
 <link rel="stylesheet" href="LoginPro.css">
 <meta charset="EUC-KR">
-<title>Insert title here</title>
+<title>ë©”ì¸í˜ì´ì§€</title>
 </head>
 <body>
 	<div class="topbar">
 		<div class="mypage" style="float: right">
-			<!-- MyPage, ¿©·¯°¡Áö Á¤º¸¸¦ È®ÀÎÇÒ ¼ö ÀÖÀ½ -->
+			<!-- MyPage, ì—¬ëŸ¬ê°€ì§€ ì •ë³´ë¥¼ í™•ì¸í•  ìˆ˜ ìˆìŒ -->
 			<form method="post" action="MyPage.jsp">
 				<input type="submit" value="MyPage">
 			</form>
 		</div>
 
 		<div class="admin" style="float: right">
-			<!-- °ü¸®ÀÚ¸ğµå ¹öÆ°, AdminV ¼Ó¼ºÀÌ true¶ó¸é ÀÌ¹öÆ°ÀÌ º¸ÀÌ°Ô ¼³Á¤ -->
-			<form method="post" action="Admin.jsp" id="admin">
+			<!-- ê´€ë¦¬ìëª¨ë“œ ë²„íŠ¼, AdminV ì†ì„±ì´ trueë¼ë©´ ì´ë²„íŠ¼ì´ ë³´ì´ê²Œ ì„¤ì • -->
+			<form method="post" action="AdminForm.jsp" id="admin">
 				<input type="submit" value="admin" , <%if (Acheck == 0) {%>
 					style="display: none" <%}%>>
 			</form>
@@ -68,40 +103,66 @@
 
 		<div class="info">
 			<div>
-				<!-- Àû¸³Æ÷ÀÎÆ® -->
-				? Æ÷ÀÎÆ®
+				<!-- ì ë¦½í¬ì¸íŠ¸ -->
+				? í¬ì¸íŠ¸
 			</div>
 			<div>
-				<!-- 'id'´Ô ¾È³çÇÏ¼¼¿ä -->
+				<!-- 'id'ë‹˜ ì•ˆë…•í•˜ì„¸ìš” -->
 
-				<%=id%>´Ô ¾î¼­¿À¼¼¿ä
+				<%=id%>ë‹˜ ì–´ì„œì˜¤ì„¸ìš”
 
 			</div>
 			<div>
-				<!-- ·Î±×¾Æ¿ô, Á¤º¸¼öÁ¤ -->
+				<!-- ë¡œê·¸ì•„ì›ƒ, ì •ë³´ìˆ˜ì • -->
 				<div style="float: left">
 					<form method="post" action="Logout.jsp">
-						<input type="submit" value="·Î±×¾Æ¿ô">
+						<input type="submit" value="ë¡œê·¸ì•„ì›ƒ">
 					</form>
 				</div>
 				<div style="float: left">
 					<form method="post" action="UpdateForm.jsp">
-						<input type="submit" value="Á¤º¸¼öÁ¤">
+						<input type="submit" value="ì •ë³´ìˆ˜ì •">
 					</form>
 				</div>
 				<div style="float: left">
 					<form method="post" action="DeleteForm.jsp">
-						<input type="submit" value="Å»Åğ">
+						<input type="submit" value="íƒˆí‡´">
 					</form>
 				</div>
 			</div>
 
 		</div>
-		<div>
-			<!-- º» ÆäÀÌÁöÀÇ ¿©·¯ ±â´Éµé -->
-			<div class="mainmain" style="text-align:center">¿µÈ­¿¹¸Å¹öÆ°</div>
-		</div>
-	</div>
+		
+			<!-- ë³¸ í˜ì´ì§€ì˜ ì—¬ëŸ¬ ê¸°ëŠ¥ë“¤ -->
+			ì˜í™”
+			<div class="mainmain" >
+				<form method="post" action = "BookingForm.jsp">
+					
+					<div class="one">
+					<input type="submit" value=<%= title[0] %> onclick="location.href='BookingForm.jsp'"></br>
+					<%= director[0]%></br>
+					<%= rating[0]%></br>
+					<%= running_time[0]%>
+					</div>
+					
+					<div class="two">
+					<input type="submit" value=<%= title[1] %> onclick="location.href='BookingForm.jsp'"></br>
+					<%= director[1]%></br>
+					<%= rating[1]%></br>
+					<%= running_time[1]%>
+					</div>
+					
+					<div class="three">
+					<input type="submit" value=<%= title[2] %> onclick="location.href='BookingForm.jsp'"></br>
+					<%= director[2]%></br>
+					<%= rating[2]%></br>
+					<%= running_time[2]%>
+					</div>
+					
+			</form>
+			</div>
+		
+
 
 
 
