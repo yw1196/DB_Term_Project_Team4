@@ -11,7 +11,7 @@
 	//파라미터 값 읽어들이는 부분
 	String id = request.getParameter("id");
 	String seat_totalnum = request.getParameter("seat_totalnum");
-	String seat_bookednum = request.getParameter("seat_bookednum");
+	String seat_bookednum = "0";
 	String movie_id = request.getParameter("movie_id");
 	String cinema_name = request.getParameter("cinema_name");
 	//DB와 연결

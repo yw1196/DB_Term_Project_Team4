@@ -15,7 +15,6 @@
 	//파라미터 값 읽어들이는 부분
 	String id = request.getParameter("id");
 	String seat_totalnum = request.getParameter("seat_totalnum");
-	String seat_bookednum = request.getParameter("seat_bookednum");
 	String movie_id = request.getParameter("movie_id");
 	String cinema_name = request.getParameter("cinema_name");
 	//DB와 연결
@@ -39,12 +38,11 @@
 			String rCinema_name = rs.getString("cinema_name");
 			pstmt.close();
 			if (id.equals(rId)&&cinema_name.equals(rCinema_name)) {
-				sql = "update screen set seat_totalnum = ?, seat_bookednum = ?, movie_id = ? where id = ?";
+				sql = "update screen set seat_totalnum = ?, movie_id = ? where id = ?";
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, seat_totalnum);
-				pstmt.setString(2, seat_bookednum);
-				pstmt.setString(3, movie_id);
-				pstmt.setString(4, id);
+				pstmt.setString(2, movie_id);
+				pstmt.setString(3, id);
 				pstmt.executeUpdate();
 				str = "상영관 정보 수정이 완료되었습니다.";
 			} else {

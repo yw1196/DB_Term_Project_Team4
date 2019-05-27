@@ -12,7 +12,6 @@
 	<form method="post" action="ScreenRegisterPro.jsp">
 		상영관 아이디 : <input type="text" name="id" maxlength="12"><br />
 		총 좌석 수 : <input type="text" name="seat_totalnum" maxlength="20"><br />
-		예약된 좌석 수 : <input type="text" name="seat_bookednum" maxlength="20"><br />
 		영화 아이디 : <input type="text" name="movie_id" maxlength="20"><br />
 		영화관 이름 : <input type="text" name="cinema_name" maxlength="20"><br />
 		<input type="submit" value="등록"> <input type="reset"
