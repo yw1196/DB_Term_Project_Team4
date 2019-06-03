@@ -45,6 +45,7 @@
 				pstmt.setString(5, StartDate);
 				pstmt.setString(6, Running_Time);
 				pstmt.setString(7, Id);
+				check=1;
 				pstmt.executeUpdate();
 			}
 			else{

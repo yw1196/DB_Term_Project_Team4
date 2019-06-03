@@ -34,9 +34,13 @@
 	
 	회원관리
 	<input type="button" value="회원정보" onclick="location.href='../web.admin.check/UserListCheckForm.jsp'">
-	<input type="button" value="vip관리" onclick="location.href='../web.admin.check/VIPCheckForm.jsp'">
+	<input type="button" value="vip관리" onclick="location.href='../web.admin.check/VIPUserCheckForm.jsp'">
+	<br>
+	
+	
 	
 	</form>
+
 	<input type="button" value="영화목록확인" onclick="location.href='../web.admin.check/MovieListCheckForm.jsp'">
 	<input type="button" value="결제유무확인" onclick="location.href='../web.admin.check/ReservationCheckForm.jsp'">
 	<br>

@@ -1,4 +1,3 @@
-
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
 	pageEncoding="EUC-KR"%>
 <%@ page import="java.sql.*"%>
@@ -20,10 +19,8 @@
 	//DB와 연결
 	Connection conn = null;
 	PreparedStatement pstmt = null;
-	String str = "";
-
 	ResultSet rs = null;
-
+	int check =0;
 	try {
 		LogonDBBean a = new LogonDBBean();
 		conn = a.getConnection();
@@ -32,7 +29,6 @@
 		pstmt = conn.prepareStatement(sql);
 		pstmt.setString(1, id);
 		rs = pstmt.executeQuery(); // 실제 쿼리 실행
-
 		if (rs.next()) {
 			String rId = rs.getString("id");
 			String rCinema_name = rs.getString("cinema_name");
@@ -44,14 +40,12 @@
 				pstmt.setString(2, movie_id);
 				pstmt.setString(3, id);
 				pstmt.executeUpdate();
-				str = "상영관 정보 수정이 완료되었습니다.";
+				check = 1;
 			} else {
-				str = "상영관 이름이 올바르지 않습니다.";
 			}
 		}
 	} catch (Exception e) {
 		e.printStackTrace();
-		str = "상영관정보 수정 실패";
 	} finally {
 		if (pstmt != null)
 			try {
@@ -64,6 +58,23 @@
 			} catch (SQLException sqle) {
 			}
 	}
+	if(check == 1){
+		%>
+<script>
+	alert("수정이 완료되었습니다.");
+	location.href = "../web.admin/Admin.jsp";
+</script>
+		<%
+	}else{
+		%>
+<script>
+	alert("정보가 올바르지 않습니다.");
+	history.go(-1);
+	
+</script>
+		<%
+	}
+	
 %>
 <!DOCTYPE html>
 <html>
@@ -72,9 +83,5 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<%=str%>
-	<form action="AdminForm.jsp">
-		<input type="submit" value="확인">
-	</form>
 </body>
 </html>

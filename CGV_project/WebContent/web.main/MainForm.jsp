@@ -11,32 +11,30 @@
 	request.setCharacterEncoding("euc-kr");
 %>
 <%
-	HttpSession hs = request.getSession();
 	LogonDBBean logon = LogonDBBean.getInstance();
+	LogonDBBean a = new LogonDBBean();
+
+	HttpSession hs = request.getSession();
 	Connection conn = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	LogonDBBean a = new LogonDBBean();
-	
-	
+
 	Movie movie = null;
 	ArrayList<Movie> movieList = new ArrayList<Movie>();
-	
 
 	String id = (String) hs.getAttribute("id");
-	
-	
+	String point = null;
+
 	try {
 
 		conn = a.getConnection();
-		//DB ì¿¼ë¦¬ì‹¤í–‰
-		//ì˜ˆë§¤ìœ¨ ìˆœìœ„ ì—íŠ¸ë¦¬ë·°íŠ¸ë¥¼ ì§‘ì–´ë„£ê³  ê·¸ê±¸ ì •í•´ì„œ nìˆœìœ„ ê¹Œì§€ë§Œ ë©”ì¸ ì‚¬ì´íŠ¸ì— ë³´ì´ê²Œë” ë°ì´í„°ë² ì´ìŠ¤ ì¡°ìž‘
-		String sql = "select * from movie;";			
+		//DB Äõ¸®½ÇÇà
+		//¿¹¸ÅÀ² ¼øÀ§ ¿¡Æ®¸®ºäÆ®¸¦ Áý¾î³Ö°í ±×°É Á¤ÇØ¼­ n¼øÀ§ ±îÁö¸¸ ¸ÞÀÎ »çÀÌÆ®¿¡ º¸ÀÌ°Ô²û µ¥ÀÌÅÍº£ÀÌ½º Á¶ÀÛ
+		String sql = "select* from movie where startdate < now();";
 		pstmt = conn.prepareStatement(sql);
-		rs = pstmt.executeQuery(); // ì‹¤ì œ ì¿¼ë¦¬ ì‹¤í–‰
-		int i = 0;
+		rs = pstmt.executeQuery(); // ½ÇÁ¦ Äõ¸® ½ÇÇà
 
-		while(rs.next()){
+		while (rs.next()) {
 			movie = new Movie();
 
 			movie.setActor(rs.getString("Actors"));
@@ -49,10 +47,18 @@
 			movie.setTitle(rs.getString("Title"));
 			movie.setRating(rs.getString("Rating"));
 			movieList.add(movie);
-			i++;
-			if(i == 3){ break; }
+	
 		}
 		rs.close();
+		
+		pstmt.close();
+		sql = "select *from customer where id = ?";
+		pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1, id);
+		rs = pstmt.executeQuery();
+		
+		rs.next();
+		point = rs.getString("pointV");
 		
 	} catch (Exception e) {
 		e.printStackTrace();
@@ -76,16 +82,18 @@
 <link rel="stylesheet" href="MainForm.css">
 
 <meta charset="EUC-KR">
-<title>ë©”ì¸ì‚¬ì´íŠ¸</title>
+<title>¸ÞÀÎ»çÀÌÆ®</title>
 </head>
 <body>
-	<div style="cursor:pointer;width:100px;height:100px;border:1px solid;"  onclick="location.href='MainForm.jsp'">
-		<img alt="" src="../home.jpg" style="width:100px; height:100px;">
+	<div
+		style="cursor: pointer; width: 100px; height: 100px; border: 1px solid;"
+		onclick="location.href='MainForm.jsp'">
+		<img alt="" src="../home.jpg" style="width: 100px; height: 100px;">
 	</div>
 	<div class="top_bar" <%if (hs.getAttribute("id") != null) {%>
 		style="display: none" <%}%>>
 		<div class="login right">
-			<input type=submit value=ë¡œê·¸ì¸
+			<input type=submit value=·Î±×ÀÎ
 				onclick="location.href='../web.login/LoginForm.jsp'">
 		</div>
 
@@ -96,15 +104,16 @@
 		<%}%>>
 		<div class="topbar">
 			<div class="mypage" style="float: right">
-				<!-- MyPage, ì—¬ëŸ¬ê°€ì§€ ì •ë³´ë¥¼ í™•ì¸í•  ìˆ˜ ìžˆìŒ -->
-				<input type="button" value="mypage" onclick="location.href='../web.mypage/MyPageForm.jsp'">
+				<!-- MyPage, ¿©·¯°¡Áö Á¤º¸¸¦ È®ÀÎÇÒ ¼ö ÀÖÀ½ -->
+				<input type="button" value="mypage"
+					onclick="location.href='../web.mypage/MyPageForm.jsp'">
 			</div>
 
 			<div class="admin" style="float: right">
-				<!-- ê´€ë¦¬ìžëª¨ë“œ ë²„íŠ¼, AdminV ì†ì„±ì´ trueë¼ë©´ ì´ë²„íŠ¼ì´ ë³´ì´ê²Œ ì„¤ì • -->
-					<input type="submit" value="admin" onclick="location.href='../web.admin/Admin.jsp'"
-						,<%if (logon.AdminCheck(id) == 0) {%> style="display: none"
-						<%}%>>
+				<!-- °ü¸®ÀÚ¸ðµå ¹öÆ°, AdminV ¼Ó¼ºÀÌ true¶ó¸é ÀÌ¹öÆ°ÀÌ º¸ÀÌ°Ô ¼³Á¤ -->
+				<input type="submit" value="admin"
+					onclick="location.href='../web.admin/Admin.jsp'"
+					,<%if (logon.AdminCheck(id) == 0) {%> style="display: none" <%}%>>
 
 			</div>
 		</div>
@@ -112,84 +121,89 @@
 
 			<div class="info">
 				<div>
-					<!-- ì ë¦½í¬ì¸íŠ¸ -->
-					? í¬ì¸íŠ¸
+					<!-- Àû¸³Æ÷ÀÎÆ® -->
+					<%=point %>Æ÷ÀÎÆ®
 				</div>
 				<div>
-					<!-- 'id'ë‹˜ ì•ˆë…•í•˜ì„¸ìš” -->
+					<!-- 'id'´Ô ¾È³çÇÏ¼¼¿ä -->
 
-					<%=id%>ë‹˜ ì–´ì„œì˜¤ì„¸ìš”
+					<%=id%>´Ô ¾î¼­¿À¼¼¿ä
 
 				</div>
 				<div>
-					<!-- ë¡œê·¸ì•„ì›ƒ, ì •ë³´ìˆ˜ì • -->
+					<!-- ·Î±×¾Æ¿ô, Á¤º¸¼öÁ¤ -->
 					<div style="float: left">
 						<form method="post" action="../web.login/Logout.jsp">
-							<input type="submit" value="ë¡œê·¸ì•„ì›ƒ">
+							<input type="submit" value="·Î±×¾Æ¿ô">
 						</form>
 					</div>
 					<div style="float: left">
 						<form method="post" action="../web.update/UpdateForm01.jsp">
-							<input type="submit" value="ì •ë³´ìˆ˜ì •">
+							<input type="submit" value="Á¤º¸¼öÁ¤">
 						</form>
 					</div>
 					<div style="float: left">
 						<form method="post" action="../web.delete/DeleteForm.jsp">
-							<input type="submit" value="íƒˆí‡´">
+							<input type="submit" value="Å»Åð">
 						</form>
 					</div>
 				</div>
 
 			</div>
 			<div>
-				<!-- ë³¸ íŽ˜ì´ì§€ì˜ ì—¬ëŸ¬ ê¸°ëŠ¥ë“¤ -->
+				<!-- º» ÆäÀÌÁöÀÇ ¿©·¯ ±â´Éµé -->
 			</div>
 		</div>
-		
-		<br><br><br>
-		ì˜í™” ì˜ˆë§¤ìˆœìœ„ top3
-		<table>
-		<tr>
-			<td>ì œëª©</td>
-			<td>ê°ë…</td>
-			<td>ì¶œì–€ì§„</td>
-			<td>ì¤„ê±°ë¦¬</td>
-			<td>ë“±ê¸‰</td>
-			<td>ê°œë´‰ì¼</td>
-			<td>ìƒì˜ì‹œê°„</td>
-			<td>ì˜ˆë§¤ìœ¨(%)</td>
-			
 
-		</tr>
-		<%while(true) { %>
-		<tr>
+		<br> <br> <br> ¿µÈ­ ¿¹¸Å¼øÀ§ top3
+		<table>
+			<tr>
+				<td>Á¦¸ñ</td>
+				<td>°¨µ¶</td>
+				<td>Ãâ¾áÁø</td>
+				<td>ÁÙ°Å¸®</td>
+				<td>µî±Þ</td>
+				<td>°³ºÀÀÏ</td>
+				<td>»ó¿µ½Ã°£</td>
+				<td>¿¹¸ÅÀ²(%)</td>
+
+
+			</tr>
+			<%
+				while (true) {
+			%>
+			<tr>
 				<%
-				if(movieList.isEmpty()){
-					break;
+					if (movieList.isEmpty()) {
+							break;
+						}
+				%>
+				<td><%=movieList.get(0).getTitle()%></td>
+				<td><%=movieList.get(0).getDirector()%></td>
+				<td><%=movieList.get(0).getActor()%></td>
+				<td><%=movieList.get(0).getPlot()%></td>
+				<td><%=movieList.get(0).getRating()%></td>
+				<td><%=movieList.get(0).getStartDate()%></td>
+				<td><%=movieList.get(0).getRunning_Time()%></td>
+
+				<%
+					movieList.remove(0);
+				%>
+
+			</tr>
+			<br>
+			<%
 				}
-				%>
-				<td><%= movieList.get(0).getTitle() %></td>
-				<td><%= movieList.get(0).getDirector() %></td>
-				<td><%= movieList.get(0).getActor() %></td>
-				<td><%= movieList.get(0).getPlot() %></td>
-				<td><%= movieList.get(0).getRating() %></td>
-				<td><%= movieList.get(0).getStartDate() %></td>
-				<td><%= movieList.get(0).getRunning_Time() %></td>
-				
-				<%
-				movieList.remove(0);
-				
-				%>
-			
-		</tr><br>
-		<% }%>
-		
-	</table>
-	<input type="button" value="ì˜í™”ì˜ˆë§¤í•˜ëŸ¬ê°€ê¸°" onclick="location.href='../web.booking/BookingForm.jsp'">
-	<br><br><br>
-		
-		
-		
+			%>
+
+		</table>
+		<input type="button" value="¿µÈ­¿¹¸ÅÇÏ·¯°¡±â"
+			onclick="location.href='../web.booking/BookingForm01.jsp'"> <br>
+
+		<br> <br>
+
+
+
 	</div>
 
 </body>

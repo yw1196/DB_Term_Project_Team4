@@ -1,4 +1,3 @@
-
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
 <%@ page import="java.sql.*" %>
@@ -15,8 +14,7 @@
 	//DB와 연결
 	Connection conn = null;
 	PreparedStatement pstmt = null;
-	String str = "";
-	
+	int check = 0;	
 	ResultSet rs = null;
 	
 	try{
@@ -39,20 +37,34 @@
 				pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, id);
 				pstmt.executeUpdate();
-				str = "상영관 정보 삭제가 완료되었습니다.";
+				check = 1;
 			}
 			else{
-				str = "해당하는 상영관과 영화관 이름이 없습니다.";
 			}
 		}
 	}
 	catch (Exception e){
 		e.printStackTrace();
-		str = "상영관정보 삭제 실패";
 	}
 	finally{
 		if(pstmt != null) try{pstmt.close();}catch(SQLException sqle){}
 		if(conn != null) try{conn.close();}catch(SQLException sqle){}
+	}
+	if(check == 1){
+		%>
+<script>
+	alert("삭제가 완료되었습니다.");
+	location.href = "../web.admin/Admin.jsp";
+</script>
+		<%
+	}else{
+		%>
+<script>
+	alert("정보가 올바르지 않습니다.");
+	history.go(-1);
+	
+</script>
+		<%
 	}
 	
 %>
@@ -63,9 +75,5 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<%=str %>
-	<form action="AdminForm.jsp">
-		<input type="submit" value="확인">
-	</form>
 </body>
 </html>

@@ -29,7 +29,7 @@
 		
 		//DB Äõ¸®½ÇÇà
 		if(pw.equals(PW)){
-			String sql = "delete from cgv.customer where ID = ?";
+			String sql = "delete from customer where ID = ?;";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, ID);
 			pstmt.executeUpdate();
